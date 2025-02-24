@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Skyfield Bank - Final Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+    .container { max-width: 400px; margin: 50px auto; padding: 20px; background: #fff; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .hidden { display: none; }
+    input { margin: 5px 0; padding: 8px; width: 100%; box-sizing: border-box; }
+    button { padding: 8px 16px; margin-top: 10px; width: 100%; background-color: #007bff; color: #fff; border: none; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+    h2 { color: #333; }
+    p { color: #555; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Login Section -->
+    <div id="loginSection">
+      <h2>Skyfield Bank Login</h2>
+      <input type="text" id="username" placeholder="Enter Username">
+      <input type="password" id="password" placeholder="Enter Password">
+      <button onclick="login()">Login</button>
+      <p id="loginError" style="color: red;"></p>
+    </div>
+    
+    <!-- Dashboard Section -->
+    <div id="dashboardSection" class="hidden">
+      <h2>Dashboard</h2>
+      <p>Welcome, <span id="userDisplay"></span>!</p>
+      <p>Current Balance: $<span id="balance">0</span></p>
+      <input type="number" id="depositAmount" placeholder="Enter deposit amount">
+      <button onclick="deposit()">Deposit</button>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </div>
+  
+  <script>
+    // Fixed credentials as finalized:
+    const validUsername = "BankManager";
+    const validPassword = "Manager12345?";
+
+    function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      
+      if (username === validUsername && password === validPassword) {
+        document.getElementById("loginSection").classList.add("hidden");
+        document.getElementById("dashboardSection").classList.remove("hidden");
+        document.getElementById("userDisplay").innerText = username;
+        
+        // Load balance from localStorage or initialize to 0
+        let balance = localStorage.getItem("balance");
+        if (balance === null) {
+          balance = 0;
+          localStorage.setItem("balance", balance);
+        }
+        document.getElementById("balance").innerText = balance;
+      } else {
+        document.getElementById("loginError").innerText = "Invalid credentials!";
+      }
+    }
+    
+    function deposit() {
+      const amount = parseFloat(document.getElementById("depositAmount").value);
+      if (isNaN(amount) || amount <= 0) {
+        alert("Please enter a valid deposit amount.");
+        return;
+      }
+      let balance = parseFloat(localStorage.getItem("balance"));
+      balance += amount;
+      localStorage.setItem("balance", balance);
+      document.getElementById("balance").innerText = balance;
+      document.getElementById("depositAmount").value = "";
+    }
+    
+    function logout() {
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
+      document.getElementById("loginError").innerText = "";
+      document.getElementById("loginSection").classList.remove("hidden");
+      document.getElementById("dashboardSection").classList.add("hidden");
+    }
+  </script>
+</body>
+</html>
